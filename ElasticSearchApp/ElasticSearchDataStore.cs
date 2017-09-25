@@ -36,7 +36,10 @@ namespace ElasticSearchApp
                 foreach(var hit in esResponse.Hits)
                 {
                     var hotel = new Hotel();
+                    hotel.Id = hit.Source.Id;
                     hotel.Name = hit.Source.Name;
+                    hotel.Type = hit.Source.Type;
+                    hotel.Description = hit.Source.Description;
                     hotelList.Add(hotel);
                 }
                

@@ -15,18 +15,15 @@ namespace ElasticSearchApp
           
             List<Hotel> list = new List<Hotel>();
             list = Hotel.GetAll();
-            foreach(var hotel in list)
+            foreach (var hotel in list)
             {
-                indexManager.CreateIndex("hotels", hotel);
+                indexManager.CreateIndex("hotel", hotel);
             }
-           
-            var data=esStore.Search("hotels", "");
-           foreach(var x in data)
+            var data=esStore.Search("hotel", "Hayat");
+            foreach(var x in data)
             {
-                Console.WriteLine(x.Name);
+                Console.WriteLine($"Hotel Id:\t"+x.Id+"\nName:\t"+x.Name+"\nType:\t"+x.Type+"\nDescription:\t"+x.Description);
             }
-           
-
             Console.ReadLine();
         }
     }

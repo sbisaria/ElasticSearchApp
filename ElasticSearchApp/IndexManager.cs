@@ -24,9 +24,9 @@ namespace ElasticSearchApp
             {
                
                 var output = elasticSearchClient.IndexExists(index);
-                if (output.Exists == false)
+                //if (output.Exists == false)
                 {
-                    elasticSearchClient.Index<Hotel>(hotel, x => x.Index(index).Type("myHotel").Refresh(Elasticsearch.Net.Refresh.True));
+                   var response = elasticSearchClient.Index<Hotel>(hotel, x => x.Index(index).Type("myHotel").Refresh(Elasticsearch.Net.Refresh.True));
                     return true;
                 }
                     
