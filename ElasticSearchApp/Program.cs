@@ -10,16 +10,16 @@ namespace ElasticSearchApp
     {
         static void Main(string[] args)
         {
-            var esStore = new ElasticSearchDataStore("http://172.16.14.213:9200/");
-            var indexManager = new IndexManager();
+            var esStore = new ElasticSearchDataStore("http://172.16.14.213:9200/", new Logger());
+            var indexManager = new IndexManager("http://172.16.14.213:9200/", new Logger());
           
             List<Hotel> list = new List<Hotel>();
             list = Hotel.GetAll();
-            foreach (var hotel in list)
-            {
-                indexManager.CreateIndex("hotel", hotel);
-            }
-            var data=esStore.Search("hotel", "Hayat");
+            //foreach (var hotel in list)
+            //{
+            //    indexManager.CreateIndex("hotels", hotel);
+            //}
+            var data=esStore.Search("hotels", "Hayat");
             foreach(var x in data)
             {
                 Console.WriteLine($"Hotel Id:\t"+x.Id+"\nName:\t"+x.Name+"\nType:\t"+x.Type+"\nDescription:\t"+x.Description);

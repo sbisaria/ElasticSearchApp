@@ -9,16 +9,22 @@ namespace ElasticSearchApp
 {
     public class ElasticSearchDataStore
     {
-        public ElasticSearchDataStore(string elasticSearchUrl)
+        public ElasticSearchDataStore(string elasticSearchUrl, ILogger logger)
         {
             ElasticSearchUrl = elasticSearchUrl;
+            _logger = logger ?? new Logger();
         }
-
+        private ILogger _logger;
         public string ElasticSearchUrl { get; }
 
         public List<Hotel> Search(string index, string query)
         {
             List<Hotel> hotelList = new List<Hotel>();
+            var logEntry = new LogEntry
+                {
+                    RequestTime = DateTime.UtcNow.ToString(),
+                    RequestType = "Search",
+                };
             try
             {
                 var uri = new Uri(ElasticSearchUrl);
@@ -26,7 +32,7 @@ namespace ElasticSearchApp
                 var elasticSearchClient = new ElasticClient(settings);
                 var esResponse = elasticSearchClient.Search<Hotel>(s =>s
                     .Index(index)
-                    .Type("myHotel")
+                    .Type("newHotel")
                     .Size(100)
                     .Query(
                         q =>
@@ -42,11 +48,17 @@ namespace ElasticSearchApp
                     hotel.Description = hit.Source.Description;
                     hotelList.Add(hotel);
                 }
-               
+                logEntry.Status = "Success";
+                logEntry.Response = esResponse.ToString();
             }
             catch(Exception e)
             {
-                //handel exception
+                logEntry.Status = "Failure";
+                logEntry.Response = e.Message;
+            }
+            finally
+            {
+                _logger.WriteLog(logEntry);
             }
             return hotelList;
         }
